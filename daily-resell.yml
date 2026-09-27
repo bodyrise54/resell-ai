@@ -1,0 +1,37 @@
+name: Resell AI - daily product selection
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every day at 08:00 UTC. GitHub may delay scheduled jobs.
+    - cron: "0 8 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  select-products:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run product engine
+        env:
+          MAX_PRODUCTS: "60"
+          COMMISSION_PCT: "13"
+          TARGET_MARGIN_PCT: "25"
+        run: python worker.py
+
+      - name: Commit generated listings
+        run: |
+          git config user.name "resell-ai-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add selected_products.csv draft_listings.csv
+          git diff --cached --quiet || git commit -m "auto: refresh 60 product candidates"
+          git push
