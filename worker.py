@@ -11,7 +11,7 @@ from typing import Any
 import requests
 
 BASE_URL = "https://developers.cjdropshipping.com/api2.0/v1"
-CJ_TOKEN = os.getenv("CJ_ACCESS_TOKEN", "").strip()
+CJ_API_KEY = os.getenv("CJ_API_KEY", os.getenv("CJ_ACCESS_TOKEN", "")).strip()
 MAX_PRODUCTS = int(os.getenv("MAX_PRODUCTS", "60"))
 COMMISSION_PCT = float(os.getenv("COMMISSION_PCT", "13"))
 TARGET_MARGIN_PCT = float(os.getenv("TARGET_MARGIN_PCT", "25"))
@@ -93,6 +93,25 @@ def calculate_metrics(cost: float, sale_price: float) -> tuple[float, float]:
     profit = sale_price - fee - cost - ESTIMATED_SHIPPING_USD
     margin = profit / sale_price * 100 if sale_price else 0
     return round(profit, 2), round(margin, 2)
+
+
+def get_access_token(session: requests.Session, api_key: str) -> str:
+    """Exchange the CJ API key for the short-lived API access token used by V2 endpoints."""
+    url = f"{BASE_URL}/authentication/getAccessToken"
+    r = session.post(url, json={"apiKey": api_key}, timeout=REQUEST_TIMEOUT)
+    try:
+        payload = r.json()
+    except ValueError as exc:
+        raise RuntimeError(f"CJ authentication returned non-JSON HTTP {r.status_code}") from exc
+    if r.status_code >= 400 or payload.get("result") is False:
+        raise RuntimeError(
+            f"CJ authentication failed (HTTP {r.status_code}, code={payload.get('code')}): "
+            f"{payload.get('message', 'Unknown error')}"
+        )
+    token = clean_text((payload.get("data") or {}).get("accessToken"))
+    if not token:
+        raise RuntimeError("CJ authentication succeeded but no accessToken was returned.")
+    return token
 
 
 def cj_get(session: requests.Session, path: str, params: dict[str, Any]) -> dict:
@@ -237,8 +256,8 @@ def write_drafts(selected: list[dict]) -> None:
 
 
 def main() -> None:
-    if not CJ_TOKEN:
-        fail("CJ_ACCESS_TOKEN is missing. Add it as a GitHub Actions repository secret.")
+    if not CJ_API_KEY:
+        fail("CJ_API_KEY/CJ_ACCESS_TOKEN is missing. Add the CJ API key as a GitHub Actions repository secret.")
     if COMMISSION_PCT + TARGET_MARGIN_PCT >= 100:
         fail("COMMISSION_PCT + TARGET_MARGIN_PCT must be below 100.")
     if not KEYWORDS:
@@ -249,10 +268,15 @@ def main() -> None:
 
     session = requests.Session()
     session.headers.update({
-        "CJ-Access-Token": CJ_TOKEN,
         "Accept": "application/json",
-        "User-Agent": "ResellAI/2.0",
+        "Content-Type": "application/json",
+        "User-Agent": "ResellAI/2.1",
     })
+
+    log("Authenticating with CJ API key...")
+    access_token = get_access_token(session, CJ_API_KEY)
+    session.headers.update({"CJ-Access-Token": access_token})
+    log("CJ authentication OK.")
 
     raw = search_cj(session)
     log(f"Raw unique products received: {len(raw)}")
