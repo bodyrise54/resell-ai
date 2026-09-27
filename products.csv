@@ -1,4 +1,9 @@
-sku,title,cost,shipping,stock,source_url,category
-ABC001,Support téléphone voiture,4.20,1.50,25,https://example.com,Auto
-ABC002,Organisateur de câbles,2.80,1.20,40,https://example.com,Maison
-ABC003,Lampe LED USB,6.50,2.00,15,https://example.com,Maison
+supplier_sku,name,brand,cost,supplier_stock,rating,reviews
+TEST-001,Support téléphone voiture,,4.90,1200,4.6,840
+TEST-002,Organisateur de câbles,,2.40,2400,4.7,2100
+TEST-003,Mini trépied téléphone,,6.80,800,4.5,620
+TEST-004,Lampe LED USB,,5.20,1500,4.4,930
+TEST-005,Support tablette bureau,,9.90,500,4.6,410
+TEST-006,Étui rangement câbles,,3.10,1900,4.5,770
+TEST-007,Kit nettoyage clavier,,4.30,900,4.3,310
+TEST-008,Support casque bureau,,7.50,700,4.6,520
