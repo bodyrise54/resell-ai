@@ -3,15 +3,19 @@ name: Resell AI - daily product selection
 on:
   workflow_dispatch:
   schedule:
-    # Every day at 08:00 UTC. GitHub may delay scheduled jobs.
     - cron: "0 8 * * *"
-
-permissions:
-  contents: write
 
 jobs:
   select-products:
     runs-on: ubuntu-latest
+
+    env:
+      CJ_ACCESS_TOKEN: ${{ secrets.CJ_ACCESS_TOKEN }}
+      MAX_PRODUCTS: "60"
+      COMMISSION_PCT: "13"
+      TARGET_MARGIN_PCT: "25"
+      CJ_COUNTRY_CODE: "FR"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,17 +25,18 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run product engine
-        env:
-          MAX_PRODUCTS: "60"
-          COMMISSION_PCT: "13"
-          TARGET_MARGIN_PCT: "25"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run worker
         run: python worker.py
 
-      - name: Commit generated listings
+      - name: Commit generated files
         run: |
-          git config user.name "resell-ai-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add selected_products.csv draft_listings.csv
-          git diff --cached --quiet || git commit -m "auto: refresh 60 product candidates"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add selected_products.csv draft_listings.csv cj_candidates.csv
+          git diff --cached --quiet || git commit -m "auto: refresh CJ product candidates"
           git push
