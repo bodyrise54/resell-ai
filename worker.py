@@ -30,7 +30,8 @@ PAGE_SIZE = min(int(os.getenv("CJ_PAGE_SIZE", "50")), 100)
 PAGES_PER_KEYWORD = max(1, int(os.getenv("CJ_PAGES_PER_KEYWORD", "1")))
 ESTIMATED_SHIPPING_USD = max(0.0, float(os.getenv("ESTIMATED_SHIPPING_USD", "0")))
 REQUEST_TIMEOUT = int(os.getenv("CJ_REQUEST_TIMEOUT", "30"))
-REQUEST_RETRIES = max(1, int(os.getenv("CJ_REQUEST_RETRIES", "3")))
+REQUEST_RETRIES = max(1, int(os.getenv("CJ_REQUEST_RETRIES", "4")))
+CJ_MIN_INTERVAL_SECONDS = max(1.05, float(os.getenv("CJ_MIN_INTERVAL_SECONDS", "1.25")))
 
 OUTPUT_SELECTED = Path("selected_products.csv")
 OUTPUT_DRAFTS = Path("draft_listings.csv")
@@ -114,20 +115,51 @@ def get_access_token(session: requests.Session, api_key: str) -> str:
     return token
 
 
+_last_cj_request_at = 0.0
+
+
+def _wait_for_cj_slot() -> None:
+    global _last_cj_request_at
+    elapsed = time.monotonic() - _last_cj_request_at
+    if elapsed < CJ_MIN_INTERVAL_SECONDS:
+        time.sleep(CJ_MIN_INTERVAL_SECONDS - elapsed)
+    _last_cj_request_at = time.monotonic()
+
+
 def cj_get(session: requests.Session, path: str, params: dict[str, Any]) -> dict:
     last_error = None
     for attempt in range(1, REQUEST_RETRIES + 1):
         try:
+            # CJ Free accounts are currently limited to about 1 authenticated
+            # request/second, so serialize calls with a safety gap.
+            _wait_for_cj_slot()
             r = session.get(f"{BASE_URL}{path}", params=params, timeout=REQUEST_TIMEOUT)
+            if r.status_code == 429:
+                last_error = RuntimeError(f"HTTP 429 rate limit: {r.text[:300]}")
+                if attempt < REQUEST_RETRIES:
+                    wait = max(4, 2 ** attempt)
+                    log(f"CJ rate limit (429); waiting {wait}s before retry {attempt + 1}/{REQUEST_RETRIES}")
+                    time.sleep(wait)
+                    continue
+                break
             r.raise_for_status()
             payload = r.json()
             if payload.get("result") is False:
-                raise RuntimeError(f"CJ error {payload.get('code')}: {payload.get('message')}")
+                code = payload.get("code")
+                message = payload.get("message")
+                # Some CJ responses use an application-level rate-limit code.
+                if str(code) in {"402", "406", "429", "1600200", "1600201"} and attempt < REQUEST_RETRIES:
+                    wait = max(4, 2 ** attempt)
+                    last_error = RuntimeError(f"CJ rate limit {code}: {message}")
+                    log(f"CJ rate limit ({code}); waiting {wait}s before retry {attempt + 1}/{REQUEST_RETRIES}")
+                    time.sleep(wait)
+                    continue
+                raise RuntimeError(f"CJ error {code}: {message}")
             return payload
         except (requests.RequestException, ValueError, RuntimeError) as exc:
             last_error = exc
             if attempt < REQUEST_RETRIES:
-                wait = 2 ** (attempt - 1)
+                wait = max(2, 2 ** (attempt - 1))
                 log(f"API request failed; retrying in {wait}s: {exc}")
                 time.sleep(wait)
     raise RuntimeError(f"CJ API request failed: {last_error}")
