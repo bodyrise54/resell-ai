@@ -23,7 +23,7 @@ DEFAULT_KEYWORDS = (
     "travel accessory,storage organizer"
 )
 KEYWORDS = [x.strip() for x in os.getenv("CJ_KEYWORDS", DEFAULT_KEYWORDS).split(",") if x.strip()]
-MIN_STOCK = int(os.getenv("CJ_MIN_STOCK", "20"))
+MIN_STOCK = int(os.getenv("CJ_MIN_STOCK", "1"))
 MIN_COST_USD = float(os.getenv("CJ_MIN_COST_USD", "1"))
 MAX_COST_USD = float(os.getenv("CJ_MAX_COST_USD", "35"))
 PAGE_SIZE = min(int(os.getenv("CJ_PAGE_SIZE", "50")), 100)
@@ -192,7 +192,6 @@ def search_cj(session: requests.Session) -> list[dict]:
                 "startSellPrice": MIN_COST_USD,
                 "endSellPrice": MAX_COST_USD,
                 "startWarehouseInventory": MIN_STOCK,
-                "verifiedWarehouse": 1,
                 "features": ["enable_description", "enable_category"],
             }
             products = extract_products(cj_get(session, "/product/listV2", params))
