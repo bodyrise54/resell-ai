@@ -1,0 +1,65 @@
+supplier_sku,title,description,price,quantity,profit_estimate,status,generated_at
+TEST-002,Organisateur de câbles,"Organisateur de câbles
+
+Produit sélectionné automatiquement par Resell AI.
+Prix indicatif : 3.87 €
+Stock fournisseur détecté : 2400
+
+Référence fournisseur : TEST-002
+Important : vérifier les informations produit, la disponibilité, les droits sur les images/marque et les règles de la marketplace avant publication.",3.87,10,0.97,READY_FOR_EBAY_API,2026-09-27T15:37:08.586338+00:00
+TEST-006,Étui rangement câbles,"Étui rangement câbles
+
+Produit sélectionné automatiquement par Resell AI.
+Prix indicatif : 5.00 €
+Stock fournisseur détecté : 1900
+
+Référence fournisseur : TEST-006
+Important : vérifier les informations produit, la disponibilité, les droits sur les images/marque et les règles de la marketplace avant publication.",5.0,10,1.25,READY_FOR_EBAY_API,2026-09-27T15:37:08.586338+00:00
+TEST-001,Support téléphone voiture,"Support téléphone voiture
+
+Produit sélectionné automatiquement par Resell AI.
+Prix indicatif : 7.90 €
+Stock fournisseur détecté : 1200
+
+Référence fournisseur : TEST-001
+Important : vérifier les informations produit, la disponibilité, les droits sur les images/marque et les règles de la marketplace avant publication.",7.9,10,1.97,READY_FOR_EBAY_API,2026-09-27T15:37:08.586338+00:00
+TEST-004,Lampe LED USB,"Lampe LED USB
+
+Produit sélectionné automatiquement par Resell AI.
+Prix indicatif : 8.39 €
+Stock fournisseur détecté : 1500
+
+Référence fournisseur : TEST-004
+Important : vérifier les informations produit, la disponibilité, les droits sur les images/marque et les règles de la marketplace avant publication.",8.39,10,2.1,READY_FOR_EBAY_API,2026-09-27T15:37:08.586338+00:00
+TEST-008,Support casque bureau,"Support casque bureau
+
+Produit sélectionné automatiquement par Resell AI.
+Prix indicatif : 12.10 €
+Stock fournisseur détecté : 700
+
+Référence fournisseur : TEST-008
+Important : vérifier les informations produit, la disponibilité, les droits sur les images/marque et les règles de la marketplace avant publication.",12.1,10,3.03,READY_FOR_EBAY_API,2026-09-27T15:37:08.586338+00:00
+TEST-003,Mini trépied téléphone,"Mini trépied téléphone
+
+Produit sélectionné automatiquement par Resell AI.
+Prix indicatif : 10.97 €
+Stock fournisseur détecté : 800
+
+Référence fournisseur : TEST-003
+Important : vérifier les informations produit, la disponibilité, les droits sur les images/marque et les règles de la marketplace avant publication.",10.97,10,2.74,READY_FOR_EBAY_API,2026-09-27T15:37:08.586338+00:00
+TEST-005,Support tablette bureau,"Support tablette bureau
+
+Produit sélectionné automatiquement par Resell AI.
+Prix indicatif : 15.97 €
+Stock fournisseur détecté : 500
+
+Référence fournisseur : TEST-005
+Important : vérifier les informations produit, la disponibilité, les droits sur les images/marque et les règles de la marketplace avant publication.",15.97,10,3.99,READY_FOR_EBAY_API,2026-09-27T15:37:08.586338+00:00
+TEST-007,Kit nettoyage clavier,"Kit nettoyage clavier
+
+Produit sélectionné automatiquement par Resell AI.
+Prix indicatif : 6.94 €
+Stock fournisseur détecté : 900
+
+Référence fournisseur : TEST-007
+Important : vérifier les informations produit, la disponibilité, les droits sur les images/marque et les règles de la marketplace avant publication.",6.94,10,1.74,READY_FOR_EBAY_API,2026-09-27T15:37:08.586338+00:00

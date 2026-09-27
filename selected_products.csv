@@ -1,0 +1,9 @@
+supplier_sku,name,brand,cost,supplier_stock,rating,reviews,_sale_price,_profit,_score
+TEST-002,Organisateur de câbles,,2.40,2400,4.7,2100,3.87,0.97,46.68040188404242
+TEST-006,Étui rangement câbles,,3.10,1900,4.5,770,5.0,1.25,42.34821751220382
+TEST-001,Support téléphone voiture,,4.90,1200,4.6,840,7.9,1.97,41.88399410977392
+TEST-004,Lampe LED USB,,5.20,1500,4.4,930,8.39,2.1,41.08867119114826
+TEST-008,Support casque bureau,,7.50,700,4.6,520,12.1,3.03,40.07726824856999
+TEST-003,Mini trépied téléphone,,6.80,800,4.5,620,10.97,2.74,39.7800236477437
+TEST-005,Support tablette bureau,,9.90,500,4.6,410,15.97,3.99,39.26062714974597
+TEST-007,Kit nettoyage clavier,,4.30,900,4.3,310,6.94,1.74,37.195249048902745
