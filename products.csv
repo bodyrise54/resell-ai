@@ -1,0 +1,4 @@
+sku,title,cost,shipping,stock,source_url,category
+ABC001,Support téléphone voiture,4.20,1.50,25,https://example.com,Auto
+ABC002,Organisateur de câbles,2.80,1.20,40,https://example.com,Maison
+ABC003,Lampe LED USB,6.50,2.00,15,https://example.com,Maison
